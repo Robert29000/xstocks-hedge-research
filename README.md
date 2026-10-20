@@ -12,7 +12,21 @@ This project measures that gap and compares three hedge strategies:
 | B. Long futures | $X \cdot (r_B \cdot T/360 + f_B)$ |
 | C. Call options | $X \cdot (0.4 \cdot \sigma \cdot \sqrt{T/365} + f_C)$ |
 
-$N$ is the number of shares. $D$ is the gross dividend per share. $w$ is the withholding tax (0.30). $T$ is the number of days from the ex-date to the payment date. The other symbols are venue parameters. The notebook explains them.
+| Symbol | Meaning | Unit |
+|---|---|---|
+| $N$ | Number of underlying shares that back the tokens of one xStock | shares |
+| $D$ | Gross dividend per share | USD |
+| $w$ | Withholding tax rate (0.30 for most US stocks) | fraction |
+| $X$ | Net dividend cash that the issuer must reinvest | USD |
+| $T$ | Calendar days from the ex-date to the payment date | days |
+| $r_A$ | Annual loan rate of the venue (for example EFFR + spread or SOFR + spread), ACT/360 | fraction per year |
+| $r_B$ | Annual financing rate in the futures price (SOFR + spread, or the perps funding rate), ACT/360 | fraction per year |
+| $f_B$ | Round-trip futures fees (commission and exchange fee, buy and sell) as a fraction of $X$ | fraction |
+| $\sigma$ | Annual volatility of the stock (the backtest uses the 20-day realized volatility) | fraction per year |
+| $f_C$ | Round-trip option fees (commission and exchange fees, buy and sell) as a fraction of $X$ | fraction |
+| $0.4$ | Approximation of $1/\sqrt{2\pi}$. $0.4 \cdot \sigma \cdot \sqrt{T/365}$ is the price of an at-the-money call as a fraction of the share price. | — |
+
+The venue values of $r_A$, $r_B$, $f_B$, and $f_C$ are in sections 4.1 to 4.3 of the notebook.
 
 ## Project layout
 
