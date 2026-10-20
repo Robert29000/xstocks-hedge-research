@@ -145,10 +145,21 @@ Other output files:
 
 ### Model
 
-- **Volatility.** Realized 20-day volatility replaces implied volatility in the option calculation. Implied volatility is usually a little higher, so the option cost can be a little too low.
+- **Volatility.** Realized 20-day volatility replaces implied volatility in the option calculation. Implied volatility is usually higher, so the option cost is probably too low. See [Realized and implied volatility](#realized-and-implied-volatility).
 - **Costs not included.** The formulas do not include bid-ask spreads or the dividend that the new shares can receive.
 - **Contract size.** The formulas assume that any number of shares can be hedged. For $N = 100{,}000$, more than half of the events need fewer than 100 shares. Options and standard futures then over-hedge. Strategy A has no contract size.
 - **Futures expiry.** Futures expire monthly (Eurex) or quarterly (CME). The model closes them on the payment date and ignores the basis change on that date.
+
+### Realized and implied volatility
+
+| | Realized volatility | Implied volatility |
+|---|---|---|
+| Definition | Standard deviation of past daily log returns, times $\sqrt{252}$ | The $\sigma$ at which the Black-Scholes price equals the market price of the option |
+| Direction | Backward-looking | Forward-looking |
+| Correct use | Price risk in the gap (unhedged case) | Cost of strategy C |
+| In the notebook | `vol_20d`, used for both | Not used. Historical option prices are not free. |
+
+The costs for strategy C are therefore a lower bound. The ranking of the strategies does not change, because C is already the most expensive.
 
 ### Venue parameters
 
