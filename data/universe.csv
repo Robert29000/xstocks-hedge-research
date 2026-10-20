@@ -1,0 +1,11 @@
+rank,xstock,underlying,company,market_cap_usd,exchange_mic
+1,NVDAx,NVDA,NVIDIA Corporation,5160533000000.0,XNAS
+2,AAPLx,AAPL,Apple Inc.,5012517062800.0,XNAS
+3,GOOGLx,GOOGL,Alphabet Inc.,4165415700000.0,XNAS
+4,MSFTx,MSFT,Microsoft Corporation,3928484842014.0,XNAS
+5,AMZNx,AMZN,Amazon.com Inc.,2696578393000.0,XNAS
+6,TSMx,TSM,Taiwan Semiconductor Manufacturing Company Ltd.,2140003788439.0,XNYS
+7,SPCXx,SPCX,Space Exploration Technologies Corp.,1982039141899.0,XNAS
+8,METAx,META,Meta Platforms Inc.,1807009853048.0,XNAS
+9,AVGOx,AVGO,Broadcom Inc.,1569330818119.0,XNAS
+10,TSLAx,TSLA,Tesla Inc.,1400983451600.0,XNAS
