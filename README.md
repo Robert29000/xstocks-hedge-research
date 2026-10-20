@@ -152,7 +152,7 @@ Other output files:
 
 ### Venue parameters
 
-Venue rates and fees were checked on 2026-10-19. The notebook gives each value a status: CONFIRMED, UNCONFIRMED, ESTIMATE, or ASSUMPTION. Check these values with the venue before a decision:
+Venue rates and fees were checked on 2026-10-19. The notebook gives each value a status: CONFIRMED, UNCONFIRMED, ESTIMATE, or ASSUMPTION. The notebook tables, the backtest, and the result use only CONFIRMED venues. Section 9 of the notebook lists the other venues. Check these values with the venue before a decision:
 
 1. Which Interactive Brokers entity onboards a Jersey company (UNCONFIRMED).
 2. Whether Interactive Brokers offers CME single stock futures (UNCONFIRMED).
