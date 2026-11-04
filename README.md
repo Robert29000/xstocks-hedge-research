@@ -18,20 +18,36 @@ This project measures that gap and compares three hedge strategies:
 | $D$ | Gross dividend per share | USD |
 | $w$ | Withholding tax rate (0.30 for most US stocks) | fraction |
 | $X$ | Net dividend cash that the issuer must reinvest | USD |
-| $T$ | Calendar days from the ex-date to the payment date | days |
+| $T$ | Calendar days from the ex-date to the payment date. For A, the loan starts on the ex-date, when the purchase settles. For B and C, the backtest adds the days from the close before the ex-date ($T_{\text{eff}}$). | days |
 | $r_A$ | Annual loan rate of the venue (for example EFFR + spread or SOFR + spread), ACT/360 | fraction per year |
 | $r_B$ | Annual financing rate in the futures price (SOFR + spread, or the perps funding rate), ACT/360 | fraction per year |
 | $f_B$ | Round-trip futures fees (commission and exchange fee, buy and sell) as a fraction of $X$ | fraction |
-| $\sigma$ | Annual volatility of the stock (the backtest uses the 20-day realized volatility) | fraction per year |
+| $\sigma$ | Annual implied volatility of an at-the-money call (from Massive option prices). If an event has no option price, the 20-day realized volatility. | fraction per year |
 | $f_C$ | Round-trip option fees (commission and exchange fees, buy and sell) as a fraction of $X$ | fraction |
 | $0.4$ | Approximation of $1/\sqrt{2\pi}$. $0.4 \cdot \sigma \cdot \sqrt{T/365}$ is the price of an at-the-money call as a fraction of the share price. | — |
 
 The venue values of $r_A$, $r_B$, $f_B$, and $f_C$ are in sections 4.1 to 4.3 of the notebook.
 
+**Capital requirements.** The cost formulas do not include the capital that the issuer must lock up during the gap. The value of this capital depends on the issuer's own balance sheet. The notebook shows the capital in separate columns:
+
+| Strategy | Capital | Meaning |
+|---|---|---|
+| A | $h \cdot X$ | Collateral that the lender asks for in addition to the bought shares (own cash or other assets). Under US Regulation T, $h = 0.5$. |
+| B | $m \cdot X$ + buffer | $m$ is the initial margin for futures as a fraction of the notional. The buffer is cash for the daily variation margin. Only cash can serve as futures margin at IBKR. |
+| C | None | The issuer pays the premium in full. |
+
+**Ways to make strategy A cheaper.** The cost formula for A is the general case: the issuer borrows all of $X$. Section 4.1 of the notebook lists ways to lower the cost:
+
+1. Pay $h \cdot X$ with own cash. Then the lender lends only $(1-h) \cdot X$, and the interest falls to $(1-h) \cdot X \cdot r_A \cdot T/360$.
+2. Pay all of $X$ with own cash, without a loan.
+3. Use portfolio margin at IBKR ($h \approx 0.33$ for one stock, USD 110,000 equity to open).
+4. Use a lender that does not hold the backing shares. This avoids a conflict between the lender's lien and the pledge for the token holders.
+
 ## Project layout
 
 ```
-fetch_data.py            Script: fetch events, dividend dates, prices, and rates into data/
+fetch_data.py            Script: fetch events, dividend dates, prices, option prices, and rates into data/
+.env.example             Template for the API keys. Copy it to .env (git ignores .env).
 hedge_research.ipynb     Notebook: data analysis, formulas, venue parameters, backtest
 requirements.txt         Python packages
 data/                    Output of fetch_data.py (raw/ is the HTTP cache)
@@ -47,12 +63,24 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-Optional: set `ALPHAVANTAGE_API_KEY` to add Alpha Vantage as a third source for dividend dates. Free key: <https://www.alphavantage.co/support/#api-key>.
+Put the API keys in `.env`:
+
+```bash
+cp .env.example .env    # then add the keys to .env
+```
+
+| Variable | Use | Necessary |
+|---|---|---|
+| `MASSIVE_API_KEY` | Option prices for the implied volatility of strategy C. Key: <https://massive.com>. | Yes, for strategy C. Without it, the notebook uses the 20-day realized volatility. |
+| `ALPHAVANTAGE_API_KEY` | Third source for dividend dates. Key: <https://www.alphavantage.co/support/#api-key>. | No |
+
+`fetch_data.py` reads `.env` at start. A variable that is set in the shell has priority over the value in `.env`.
 
 ## Fetch the data
 
 ```bash
-# Default scope: the 10 xStocks with the largest underlying market cap, events of the last 6 months (< 1 minute)
+# Default scope: the 10 xStocks with the largest underlying market cap, events of the last 6 months
+# (< 1 minute without MASSIVE_API_KEY, about 15 minutes with it: the free tier permits 5 requests a minute)
 .venv/bin/python fetch_data.py
 
 # Other scopes
@@ -70,7 +98,7 @@ Optional: set `ALPHAVANTAGE_API_KEY` to add Alpha Vantage as a third source for 
 | `--price-delay` | 1.0 | Seconds between two Yahoo Finance downloads |
 | `--refresh` | off | Ignore the cache in `data/raw/` and download again |
 
-The script waits between requests to each host. Some hosts have a fixed longer delay: Nasdaq and stockanalysis.com 3 s, Alpha Vantage 15 s. The script retries a failed request (HTTP 429, HTTP 5xx, or timeout) up to 4 times with exponential backoff. The script keeps every response in `data/raw/`. A second run reads the cache and sends no requests.
+The script waits between requests to each host. Some hosts have a fixed longer delay: Nasdaq and stockanalysis.com 3 s, Massive 12.5 s, Alpha Vantage 15 s. The script retries a failed request (HTTP 429, HTTP 5xx, or timeout) up to 4 times with exponential backoff. The script keeps every response in `data/raw/`. A second run reads the cache and sends no requests.
 
 ### Steps
 
@@ -80,6 +108,7 @@ The script waits between requests to each host. Some hosts have a fixed longer d
 4. Match each event to the dividend row with the nearest ex-date or payment date and the same amount. Classify the event as `ex-date` or `payment-date` activation.
 5. Fetch daily unadjusted close prices from Yahoo Finance. Calculate the close before the ex-date, the close on the payment date, and the 20-day realized volatility.
 6. Fetch daily SOFR and EFFR from the NY Fed.
+7. If `MASSIVE_API_KEY` is set, fetch the call options of each event from Massive. The script uses the first listed expiry on or after the payment date and the two strikes around $S_0 = P_{\text{prev}} - D$. It calculates the Black-Scholes implied volatility from the daily close of each option. It interpolates the volatility to $S_0$. It does this at the close before the ex-date and at the close on the payment date.
 
 ### Output
 
@@ -105,6 +134,10 @@ The script waits between requests to each host. Some hosts have a fixed longer d
 | `shortfall_usd_per_share` | Loss in USD for each underlying share held |
 | `vol_20d` | 20-day realized volatility (annual) before the ex-date |
 | `sofr_on_ex`, `effr_on_ex` | Rates in % on the ex-date |
+| `opt_expiry`, `opt_k_lo`, `opt_k_hi` | Option expiry and the two strikes around $S_0$ |
+| `opt_c_lo_open`, `opt_c_hi_open`, `opt_c_lo_pay`, `opt_c_hi_pay` | Option close (last trade, USD per share) of the two strikes, before the ex-date and on the payment date |
+| `opt_volume_open` | Contracts traded in the two strikes on the day before the ex-date |
+| `iv_open`, `iv_pay` | At-the-money implied volatility (annual) at the close before the ex-date and on the payment date |
 
 Other output files:
 
@@ -132,12 +165,13 @@ Other output files:
 | Dividend dates, fallback | Alpha Vantage `DIVIDENDS` | Free key | 25 requests a day |
 | Prices | Yahoo Finance via `yfinance` (unofficial) | No | Not published |
 | SOFR, EFFR | <https://markets.newyorkfed.org/api/rates> | No | Not published |
+| Option contracts and daily option prices | Massive (formerly Polygon.io), `https://api.polygon.io` `/v3/reference/options/contracts` and `/v2/aggs` | Free key | 5 requests a minute. End-of-day data. No bid and ask. |
 
 ## Limitations and Assumptions
 
 ### Data
 
-- **Sample size.** The default scope gives 14 events for 7 stocks (run of 2026-10-19). AMZN, SPCX (SpaceX), and TSLA are in the top 10 but paid no dividend in the period. Read the backtest results as an indication, not as a statistic.
+- **Sample size.** The default scope gives 14 events for 7 stocks (run of 2026-11-04). AMZN, SPCX (SpaceX), and TSLA are in the top 10 but paid no dividend in the period. Read the backtest results as an indication, not as a statistic.
 - **Unofficial sources.** The Nasdaq, stockanalysis.com, and Yahoo Finance endpoints are unofficial. They can change without notice.
 - **Dividend dates for NYSE stocks.** The Nasdaq dividend endpoint covers only Nasdaq-listed stocks. No Alpha Vantage key was set, so the script uses stockanalysis.com for other stocks. In the default scope, this applies to TSM.
 - **Non-US underlyings.** Non-US underlyings (for example Hong Kong listings) have no dividend dates at these sources. They are in `data/unmatched_events.csv`.
@@ -145,10 +179,13 @@ Other output files:
 
 ### Model
 
-- **Volatility.** Realized 20-day volatility replaces implied volatility in the option calculation. Implied volatility is usually higher, so the option cost is probably too low. See [Realized and implied volatility](#realized-and-implied-volatility).
-- **Costs not included.** The formulas do not include bid-ask spreads or the dividend that the new shares can receive.
+- **Volatility.** Strategy C uses the implied volatility from the option close (the last trade of the day). The last trade can be some minutes older than the stock close. If an event has no option price, the notebook uses the 20-day realized volatility. See [Realized and implied volatility](#realized-and-implied-volatility).
+- **Costs not included.** The formulas do not include bid-ask spreads. The free Massive data has no bid and ask.
+- **Structural gain of strategy A.** The multiplier uses the close with the dividend, so the issuer gains about $D/P_{\text{prev}}$ of $X$. Strategy A buys the shares at that close, with the dividend. It gets the net dividend on the new shares instead, so its gain is only $(1-w) \cdot D/P_{\text{prev}}$. The backtest does not include this difference (about 3 bps of $X$ on average).
+- **Capital.** The cost formulas do not include the capital that A and B lock up. See **Capital requirements** at the start of this README.
 - **Contract size.** The formulas assume that any number of shares can be hedged. For $N = 100{,}000$, more than half of the events need fewer than 100 shares. Options and standard futures then over-hedge. Strategy A has no contract size.
 - **Futures expiry.** Futures expire monthly (Eurex) or quarterly (CME). The model closes them on the payment date and ignores the basis change on that date.
+- **Margin and collateral values.** The futures margins and the collateral values $h$ are static. No free source gives historical values, and the CME margin pages block scripts. Swiss banks publish no loan-to-value for one stock, so their $h$ is an ESTIMATE.
 
 ### Realized and implied volatility
 
@@ -157,9 +194,9 @@ Other output files:
 | Definition | Standard deviation of past daily log returns, times $\sqrt{252}$ | The $\sigma$ at which the Black-Scholes price equals the market price of the option |
 | Direction | Backward-looking | Forward-looking |
 | Correct use | Price risk in the gap (unhedged case) | Cost of strategy C |
-| In the notebook | `vol_20d`, used for both | Not used. Historical option prices are not free. |
+| In the notebook | `vol_20d`: unhedged risk band, and the fallback for strategy C | `iv_open`, `iv_pay`: cost of strategy C |
 
-The costs for strategy C are therefore a lower bound. The ranking of the strategies does not change, because C is already the most expensive.
+The 20-day realized volatility is not a good replacement for the implied volatility. Usually it is a little lower. But if the 20-day window contains an earnings day, it can be much higher. Example: AAPL, ex-date 2026-08-10. The implied volatility was 23%, and the 20-day realized volatility was 38%.
 
 ### Venue parameters
 
@@ -170,10 +207,11 @@ Venue rates and fees were checked on 2026-10-19. The notebook gives each value a
 3. The CME exchange fee for single stock futures (ASSUMPTION: USD 0.30 per side).
 4. The Kraken xStocks perps funding rate (ASSUMPTION: 10.95% per year).
 5. The Eurex total return futures spread (ASSUMPTION: 0.50% per year).
-6. The terms of Alpaca, InCore Bank, and a Payward intercompany loan. These terms are not public.
+6. The IBKR margin for Eurex single stock futures (ESTIMATE: 1.15 times the Eurex margin, thus 13%) and for the new CME single stock futures (UNCONFIRMED: 20%). The collateral $h$ for Swiss Lombard loans (ESTIMATE: 0.5). Margin and collateral values were checked on 2026-11-04.
+7. The terms of Alpaca, InCore Bank, and a Payward intercompany loan. These terms are not public.
 
 ### Legal
 
 - **No derivatives clause.** The prospectus has no clause that permits the issuer to use futures or options. Strategies B and C can need a prospectus supplement, Jersey FSC consent, or a hedge by a group company.
-- **Pledged collateral.** The underlying shares are pledged to the security agent for the token holders. A loan for strategy A needs other collateral or no collateral.
+- **Pledged collateral.** The underlying shares are pledged to the security agent for the token holders. A loan for strategy A needs other collateral or no collateral. The futures margin for strategy B must be free cash of the issuer. IBKR, Alpaca, and Swiss banks take a lien on all assets of the client, in all its accounts. See [`docs/legal/venues/interactive-brokers.md`](docs/legal/venues/interactive-brokers.md#collateral-and-margin).
 - **Not legal advice.** The legal analysis is research, not legal advice. See [`docs/legal/README.md`](docs/legal/README.md#open-legal-questions).

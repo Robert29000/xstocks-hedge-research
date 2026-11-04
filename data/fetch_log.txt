@@ -1,49 +1,93 @@
-2026-10-19 19:29:45,683 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=1&pageSize=100 -> 200
-2026-10-19 19:29:46,838 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=2&pageSize=100 -> 200
-2026-10-19 19:29:47,757 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=3&pageSize=100 -> 200
-2026-10-19 19:29:48,577 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=4&pageSize=100 -> 200
-2026-10-19 19:29:49,806 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=5&pageSize=100 -> 200
-2026-10-19 19:29:50,626 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=6&pageSize=100 -> 200
-2026-10-19 19:29:54,144 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=7&pageSize=100 -> 200
-2026-10-19 19:29:57,055 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=8&pageSize=100 -> 200
-2026-10-19 19:29:58,204 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=9&pageSize=100 -> 200
-2026-10-19 19:29:59,230 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=10&pageSize=100 -> 200
-2026-10-19 19:30:00,256 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=11&pageSize=100 -> 200
-2026-10-19 19:30:01,276 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=12&pageSize=100 -> 200
-2026-10-19 19:30:02,401 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=13&pageSize=100 -> 200
-2026-10-19 19:30:04,757 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=14&pageSize=100 -> 200
-2026-10-19 19:30:04,770 INFO assets: 1360 xStocks
-2026-10-19 19:30:07,131 INFO GET https://api.nasdaq.com/api/screener/stocks?tableonly=true&download=true -> 200
-2026-10-19 19:30:07,175 INFO top 10 xStocks by market cap: NVDAx, AAPLx, GOOGLx, MSFTx, AMZNx, TSMx, SPCXx, METAx, AVGOx, TSLAx
-2026-10-19 19:30:07,175 INFO events effective since 2026-04-19
-2026-10-19 19:30:07,624 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=NVDAx&page=1 -> 200
-2026-10-19 19:30:09,076 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AAPLx&page=1 -> 200
-2026-10-19 19:30:09,336 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=GOOGLx&page=1 -> 200
-2026-10-19 19:30:10,694 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=MSFTx&page=1 -> 200
-2026-10-19 19:30:11,354 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AMZNx&page=1 -> 200
-2026-10-19 19:30:12,741 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=TSMx&page=1 -> 200
-2026-10-19 19:30:13,662 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=SPCXx&page=1 -> 200
-2026-10-19 19:30:14,340 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=METAx&page=1 -> 200
-2026-10-19 19:30:15,390 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AVGOx&page=1 -> 200
-2026-10-19 19:30:17,861 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=TSLAx&page=1 -> 200
-2026-10-19 19:30:17,872 INFO cash-dividend events: 14 for 7 xStocks
-2026-10-19 19:30:17,872 INFO no cash-dividend events in the period: AMZNx, SPCXx, TSLAx
-2026-10-19 19:30:20,949 INFO GET https://api.nasdaq.com/api/quote/AAPL/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:23,084 INFO GET https://api.nasdaq.com/api/quote/AVGO/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:26,062 INFO GET https://api.nasdaq.com/api/quote/GOOGL/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:30,150 INFO GET https://api.nasdaq.com/api/quote/META/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:31,277 INFO GET https://api.nasdaq.com/api/quote/MSFT/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:35,270 INFO GET https://api.nasdaq.com/api/quote/NVDA/dividends?assetclass=stocks -> 200
-2026-10-19 19:30:35,502 INFO GET https://stockanalysis.com/api/symbol/s/tsm/dividend -> 200
-2026-10-19 19:30:38,891 INFO yfinance AAPL 2026-03-27..2026-08-18 -> 98 rows
-2026-10-19 19:30:40,171 INFO yfinance AVGO 2026-05-08..2026-10-05 -> 102 rows
-2026-10-19 19:30:41,443 INFO yfinance GOOGL 2026-04-24..2026-09-19 -> 102 rows
-2026-10-19 19:30:42,696 INFO yfinance META 2026-05-01..2026-10-03 -> 107 rows
-2026-10-19 19:30:43,944 INFO yfinance MSFT 2026-04-06..2026-09-15 -> 112 rows
-2026-10-19 19:30:45,169 INFO yfinance NVDA 2026-04-20..2026-10-06 -> 117 rows
-2026-10-19 19:30:46,431 INFO yfinance TSM 2026-04-27..2026-10-13 -> 117 rows
-2026-10-19 19:30:47,660 INFO GET https://markets.newyorkfed.org/api/rates/secured/sofr/search.json?startDate=2026-04-11&endDate=2026-10-19 -> 200
-2026-10-19 19:30:48,025 INFO GET https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-04-11&endDate=2026-10-19 -> 200
-2026-10-19 19:30:48,039 INFO wrote 14 events (0 unmatched) to /Users/robert/Work/xstocks-hedge-research/data
-2026-10-19 19:30:48,040 INFO activation basis: {'ex-date': 14}
-2026-10-19 19:30:48,040 INFO dates source: {'nasdaq': 12, 'stockanalysis': 2}
+2026-11-04 17:31:08,314 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=1&pageSize=100 -> 200
+2026-11-04 17:31:09,614 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=2&pageSize=100 -> 200
+2026-11-04 17:31:10,433 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=3&pageSize=100 -> 200
+2026-11-04 17:31:14,062 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=4&pageSize=100 -> 200
+2026-11-04 17:31:16,471 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=5&pageSize=100 -> 200
+2026-11-04 17:31:17,388 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=6&pageSize=100 -> 200
+2026-11-04 17:31:19,058 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=7&pageSize=100 -> 200
+2026-11-04 17:31:20,046 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=8&pageSize=100 -> 200
+2026-11-04 17:31:23,574 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=9&pageSize=100 -> 200
+2026-11-04 17:31:24,435 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=10&pageSize=100 -> 200
+2026-11-04 17:31:26,008 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=11&pageSize=100 -> 200
+2026-11-04 17:31:26,746 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=12&pageSize=100 -> 200
+2026-11-04 17:31:28,746 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=13&pageSize=100 -> 200
+2026-11-04 17:31:29,707 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=14&pageSize=100 -> 200
+2026-11-04 17:31:30,066 INFO GET https://api.xstocks.fi/api/v2/public/assets?page=15&pageSize=100 -> 200
+2026-11-04 17:31:30,081 INFO assets: 1416 xStocks
+2026-11-04 17:31:33,087 INFO GET https://api.nasdaq.com/api/screener/stocks?tableonly=true&download=true -> 200
+2026-11-04 17:31:33,141 INFO top 10 xStocks by market cap: NVDAx, AAPLx, MSFTx, GOOGLx, AMZNx, TSMx, SPCXx, METAx, AVGOx, TSLAx
+2026-11-04 17:31:33,142 INFO events effective since 2026-05-04
+2026-11-04 17:31:34,189 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=NVDAx&page=1 -> 200
+2026-11-04 17:31:34,392 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AAPLx&page=1 -> 200
+2026-11-04 17:31:35,355 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=MSFTx&page=1 -> 200
+2026-11-04 17:31:37,234 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=GOOGLx&page=1 -> 200
+2026-11-04 17:31:38,056 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AMZNx&page=1 -> 200
+2026-11-04 17:31:39,372 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=TSMx&page=1 -> 200
+2026-11-04 17:31:39,569 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=SPCXx&page=1 -> 200
+2026-11-04 17:31:41,319 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=METAx&page=1 -> 200
+2026-11-04 17:31:41,603 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=AVGOx&page=1 -> 200
+2026-11-04 17:31:42,853 INFO GET https://api.xstocks.fi/api/v2/public/corporate-actions/history?pageSize=100&sortBy=createdTimeUtc&sortOrder=asc&symbol=TSLAx&page=1 -> 200
+2026-11-04 17:31:42,871 INFO cash-dividend events: 14 for 7 xStocks
+2026-11-04 17:31:42,871 INFO no cash-dividend events in the period: AMZNx, SPCXx, TSLAx
+2026-11-04 17:31:43,982 INFO GET https://api.nasdaq.com/api/quote/AAPL/dividends?assetclass=stocks -> 200
+2026-11-04 17:31:47,154 INFO GET https://api.nasdaq.com/api/quote/AVGO/dividends?assetclass=stocks -> 200
+2026-11-04 17:31:51,045 INFO GET https://api.nasdaq.com/api/quote/GOOGL/dividends?assetclass=stocks -> 200
+2026-11-04 17:31:53,172 INFO GET https://api.nasdaq.com/api/quote/META/dividends?assetclass=stocks -> 200
+2026-11-04 17:31:56,996 INFO GET https://api.nasdaq.com/api/quote/MSFT/dividends?assetclass=stocks -> 200
+2026-11-04 17:31:59,990 INFO GET https://api.nasdaq.com/api/quote/NVDA/dividends?assetclass=stocks -> 200
+2026-11-04 17:32:01,012 INFO GET https://stockanalysis.com/api/symbol/s/tsm/dividend -> 200
+2026-11-04 17:32:03,401 INFO yfinance AAPL 2026-03-27..2026-08-18 -> 98 rows
+2026-11-04 17:32:04,607 INFO yfinance AVGO 2026-05-08..2026-10-05 -> 102 rows
+2026-11-04 17:32:05,771 INFO yfinance GOOGL 2026-04-24..2026-09-19 -> 102 rows
+2026-11-04 17:32:06,967 INFO yfinance META 2026-05-01..2026-10-03 -> 107 rows
+2026-11-04 17:32:08,177 INFO yfinance MSFT 2026-04-06..2026-09-15 -> 112 rows
+2026-11-04 17:32:09,379 INFO yfinance NVDA 2026-04-20..2026-10-06 -> 117 rows
+2026-11-04 17:32:10,597 INFO yfinance TSM 2026-04-27..2026-10-13 -> 117 rows
+2026-11-04 17:32:11,835 INFO GET https://markets.newyorkfed.org/api/rates/secured/sofr/search.json?startDate=2026-04-11&endDate=2026-11-04 -> 200
+2026-11-04 17:32:12,150 INFO GET https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-04-11&endDate=2026-11-04 -> 200
+2026-11-04 17:32:12,941 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=AAPL&contract_type=call&as_of=2026-05-08&expiration_date.gte=2026-05-14&expiration_date.lte=2026-06-28&strike_price.gte=263.75&strike_price.lte=322.36&limit=1000 -> 200
+2026-11-04 17:32:24,825 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AAPL260515C00292500/range/1/day/2026-05-08/2026-05-14?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:32:37,341 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AAPL260515C00295000/range/1/day/2026-05-08/2026-05-14?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:32:49,879 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=AAPL&contract_type=call&as_of=2026-08-07&expiration_date.gte=2026-08-13&expiration_date.lte=2026-09-27&strike_price.gte=281.75&strike_price.lte=344.37&limit=1000 -> 200
+2026-11-04 17:33:02,359 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AAPL260814C00312500/range/1/day/2026-08-07/2026-08-13?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:33:14,882 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AAPL260814C00315000/range/1/day/2026-08-07/2026-08-13?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:33:27,394 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=AVGO&contract_type=call&as_of=2026-06-18&expiration_date.gte=2026-06-30&expiration_date.lte=2026-08-14&strike_price.gte=369.63&strike_price.lte=451.77&limit=1000 -> 200
+2026-11-04 17:33:39,891 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AVGO260701C00410000/range/1/day/2026-06-18/2026-06-30?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:33:52,395 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AVGO260701C00412500/range/1/day/2026-06-18/2026-06-30?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:34:04,900 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=AVGO&contract_type=call&as_of=2026-09-18&expiration_date.gte=2026-09-30&expiration_date.lte=2026-11-14&strike_price.gte=321.26&strike_price.lte=392.66&limit=1000 -> 200
+2026-11-04 17:34:17,394 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AVGO260930C00355000/range/1/day/2026-09-18/2026-09-30?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:34:29,927 INFO GET https://api.polygon.io/v2/aggs/ticker/O:AVGO260930C00357500/range/1/day/2026-09-18/2026-09-30?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:34:42,460 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=GOOGL&contract_type=call&as_of=2026-06-05&expiration_date.gte=2026-06-15&expiration_date.lte=2026-07-30&strike_price.gte=331.48&strike_price.lte=405.14&limit=1000 -> 200
+2026-11-04 17:34:54,904 INFO GET https://api.polygon.io/v2/aggs/ticker/O:GOOGL260615C00367500/range/1/day/2026-06-05/2026-06-15?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:35:07,407 INFO GET https://api.polygon.io/v2/aggs/ticker/O:GOOGL260615C00370000/range/1/day/2026-06-05/2026-06-15?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:35:19,947 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=GOOGL&contract_type=call&as_of=2026-09-03&expiration_date.gte=2026-09-14&expiration_date.lte=2026-10-29&strike_price.gte=308.03&strike_price.lte=376.49&limit=1000 -> 200
+2026-11-04 17:35:32,415 INFO GET https://api.polygon.io/v2/aggs/ticker/O:GOOGL260914C00340000/range/1/day/2026-09-03/2026-09-14?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:35:44,931 INFO GET https://api.polygon.io/v2/aggs/ticker/O:GOOGL260914C00345000/range/1/day/2026-09-03/2026-09-14?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:35:57,593 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=META&contract_type=call&as_of=2026-06-12&expiration_date.gte=2026-06-25&expiration_date.lte=2026-08-09&strike_price.gte=509.81&strike_price.lte=623.10&limit=1000 -> 200
+2026-11-04 17:36:10,069 INFO GET https://api.polygon.io/v2/aggs/ticker/O:META260626C00565000/range/1/day/2026-06-12/2026-06-25?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:36:22,470 INFO GET https://api.polygon.io/v2/aggs/ticker/O:META260626C00567500/range/1/day/2026-06-12/2026-06-25?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:36:35,022 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=META&contract_type=call&as_of=2026-09-18&expiration_date.gte=2026-09-28&expiration_date.lte=2026-11-12&strike_price.gte=598.70&strike_price.lte=731.75&limit=1000 -> 200
+2026-11-04 17:36:47,428 INFO GET https://api.polygon.io/v2/aggs/ticker/O:META260928C00665000/range/1/day/2026-09-18/2026-09-28?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:36:59,942 INFO GET https://api.polygon.io/v2/aggs/ticker/O:META260928C00667500/range/1/day/2026-09-18/2026-09-28?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:37:12,511 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=MSFT&contract_type=call&as_of=2026-08-19&expiration_date.gte=2026-09-10&expiration_date.lte=2026-10-25&strike_price.gte=435.06&strike_price.lte=531.74&limit=1000 -> 200
+2026-11-04 17:37:24,960 INFO GET https://api.polygon.io/v2/aggs/ticker/O:MSFT260911C00480000/range/1/day/2026-08-19/2026-09-10?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:37:37,453 INFO GET https://api.polygon.io/v2/aggs/ticker/O:MSFT260911C00485000/range/1/day/2026-08-19/2026-09-10?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:37:50,047 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=MSFT&contract_type=call&as_of=2026-05-20&expiration_date.gte=2026-06-11&expiration_date.lte=2026-07-26&strike_price.gte=378.13&strike_price.lte=462.16&limit=1000 -> 200
+2026-11-04 17:38:02,459 INFO GET https://api.polygon.io/v2/aggs/ticker/O:MSFT260612C00420000/range/1/day/2026-05-20/2026-06-11?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:38:14,965 INFO GET https://api.polygon.io/v2/aggs/ticker/O:MSFT260612C00425000/range/1/day/2026-05-20/2026-06-11?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:38:27,517 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=NVDA&contract_type=call&as_of=2026-06-03&expiration_date.gte=2026-06-26&expiration_date.lte=2026-08-10&strike_price.gte=193.05&strike_price.lte=235.95&limit=1000 -> 200
+2026-11-04 17:38:39,995 INFO GET https://api.polygon.io/v2/aggs/ticker/O:NVDA260626C00210000/range/1/day/2026-06-03/2026-06-26?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:38:52,547 INFO GET https://api.polygon.io/v2/aggs/ticker/O:NVDA260626C00215000/range/1/day/2026-06-03/2026-06-26?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:39:05,006 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=NVDA&contract_type=call&as_of=2026-09-09&expiration_date.gte=2026-10-01&expiration_date.lte=2026-11-15&strike_price.gte=201.08&strike_price.lte=245.76&limit=1000 -> 200
+2026-11-04 17:39:17,479 INFO GET https://api.polygon.io/v2/aggs/ticker/O:NVDA261002C00220000/range/1/day/2026-09-09/2026-10-01?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:39:29,984 INFO GET https://api.polygon.io/v2/aggs/ticker/O:NVDA261002C00225000/range/1/day/2026-09-09/2026-10-01?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:39:42,502 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=TSM&contract_type=call&as_of=2026-09-15&expiration_date.gte=2026-10-08&expiration_date.lte=2026-11-22&strike_price.gte=371.59&strike_price.lte=454.16&limit=1000 -> 200
+2026-11-04 17:39:54,993 INFO GET https://api.polygon.io/v2/aggs/ticker/O:TSM261009C00410000/range/1/day/2026-09-15/2026-10-08?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:40:07,522 INFO GET https://api.polygon.io/v2/aggs/ticker/O:TSM261009C00415000/range/1/day/2026-09-15/2026-10-08?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:40:20,028 INFO GET https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=TSM&contract_type=call&as_of=2026-06-10&expiration_date.gte=2026-07-09&expiration_date.lte=2026-08-23&strike_price.gte=367.20&strike_price.lte=448.80&limit=1000 -> 200
+2026-11-04 17:40:32,505 INFO GET https://api.polygon.io/v2/aggs/ticker/O:TSM260710C00405000/range/1/day/2026-06-10/2026-07-09?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:40:45,011 INFO GET https://api.polygon.io/v2/aggs/ticker/O:TSM260710C00410000/range/1/day/2026-06-10/2026-07-09?adjusted=true&sort=asc&limit=50 -> 200
+2026-11-04 17:40:45,025 INFO option implied volatility: 14 of 14 events
+2026-11-04 17:40:45,034 INFO wrote 14 events (0 unmatched) to /Users/robert/Work/xstocks-hedge-research/data
+2026-11-04 17:40:45,035 INFO activation basis: {'ex-date': 14}
+2026-11-04 17:40:45,035 INFO dates source: {'nasdaq': 12, 'stockanalysis': 2}

@@ -100,6 +100,17 @@ The Jersey FSC consent limits the issuer's brokers and prime borrowers. They mus
 
 This rule is the main legal filter for the venue list in [README.md](README.md#how-the-venues-were-filtered).
 
+## Funding and borrowing
+
+Research on 2026-11-04. Source: the base prospectus (<https://cdn.prod.website-files.com/655f3efc4be468487052e35a/6a748b81c9b1aca19a11c102_Backed_Assets_Base%20Prospectus_20260727.pdf>).
+
+- **Earlier shareholder loans.** "As of December 31st, 2025, the Parent provided Backed Assets (JE) Limited total shareholder loans (including accrued interest) in the value of USD 6,075,434.74." Section heading: "Subordinated Shareholder Loan" (§3.1.1.8, §3.9.2). CONFIRMED.
+- **Recapitalisation.** On 2026-01-06, the parent converted the loan into capital and "terminated all intercompany loan agreements". The issuer "received a further USD 16,823,000 in financing reflected as a cash balance" (§3.1.1.5). CONFIRMED. It is not known if this cash is free for the hedge.
+- **No group support.** Neither Payward Europe Limited nor Payward "is required to provide financial or liquidity support" (§2.3.2.1). A loan needs a new, explicit agreement. CONFIRMED.
+- **Borrowing.** The research found no clause that forbids borrowing. The "sole business purpose" text is a risk factor, not a covenant. §3.1.1.7 refers to the issuer's "borrowing and funding structure". CONFIRMED (no clause found).
+- **New shares and the Collateral Accounts.** The account control terms permit the issuer to use pledged cash for new underlying shares only if they are "immediately credited to any of the Collateral Accounts". The issuer may move "any cash resulting from dividends distributed by the Underlying to the proprietary account of the Issuer". CONFIRMED. If a lender holds the new shares as collateral for a loan, they are not in a Collateral Account until the loan is repaid. Counsel must check this.
+- **COBO.** The issuer's Jersey consent is under Articles 2 and 4 of the Control of Borrowing Order, which cover the issue of shares and securities. Jersey plans to simplify COBO in 2026–2027. Sources: <https://jerseylaw.je/laws/current/ro_3943>, <https://www.mourant.com/updates/control-of-borrowing-jersey-amendment-order-2026-the-simplification-of-jerseys-cobo-framework-begins/>. Whether a plain loan needs consent is UNCONFIRMED.
+
 ## Hedging permission
 
 The issuer's "sole business purpose is the issuance and redemption" of products. The products are backed 1:1 by underlying shares ("Standard Collateral"). The research found no prospectus clause that permits the issuer to trade derivatives for hedging. The word "hedg" appears only in text that advises investors.

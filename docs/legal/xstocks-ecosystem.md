@@ -37,6 +37,8 @@ Securities lending: "Alpaca Securities LLC acts as Prime Borrower according to t
 - "Security Agent Services AG, Baarerstrasse 75, 6300 Zug, Switzerland will act as the Security Agent." CONFIRMED.
 - The collateral is a Swiss pledge, or a US or UK securities account control agreement, depending on where the custodian is.
 - **Result for strategy A:** the custodian holds the underlying shares under a pledge for the token holders. The issuer cannot pledge the same shares again for a Lombard loan without legal review (inference, UNCONFIRMED).
+- Lenders and brokers (IBKR, Alpaca, Swiss banks) have a general lien over all assets of a client. Alpaca and InCore hold the backing shares. See [alpaca.md](venues/alpaca.md#collateral-and-lien) and [swiss-banks.md](venues/swiss-banks.md#collateral-and-lien).
+- New shares bought with pledged cash must be "immediately credited to any of the Collateral Accounts". See [xstocks-issuer.md](xstocks-issuer.md#funding-and-borrowing).
 
 ## Multiplier mechanism
 
@@ -57,6 +59,8 @@ Source: <https://docs.xstocks.fi/docs/dividends-and-stock-splits>
 | xStocks docs | "Activation is set for 00:30 UTC on the day immediately following the Ex-Date" |
 | Kraken FAQ | "approximately 8:00 PM EST on the day prior to the Ex-Date" |
 | xStocks API data | Before about May 2026: activation on the evening of the **payment date**. From about May 2026: activation on the evening **before the ex-date**. |
+
+The xStocks docs and the Kraken FAQ can describe the same moment in two time zones. The 2026-11-04 run has 14 events. In most of them, the multiplier activated at 20:30 New York time on the evening before the ex-date. That is 00:30 UTC on the ex-date. For some Monday ex-dates, it activated on the Sunday at 19:55 New York time. The ex-date is a US Eastern Time calendar date.
 
 The `fetch_data.py` output supports the API reading. The multiplier step lets you calculate the reference price: `net dividend / (multiplier_new / multiplier_old − 1)`.
 

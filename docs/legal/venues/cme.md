@@ -24,6 +24,12 @@ Numbers (fees, margins, implied financing) are in [`hedge_research.ipynb`](../..
 | C | E-mini S&P 500 options | Expiries every business day for about 5 weeks. Source: <https://www.cmegroup.com/trading/equity-index/files/es-options-product-codes-and-listing-calendar.pdf>. |
 | C | US single stock and ETF options (OCC) | 100 shares per contract. Weekly expiries on Monday, Wednesday, and Friday for large names (AAPL, NVDA, MSFT, AMZN, GOOGL, META, TSLA, and others). Source: <https://www.miaxglobal.com/alert/2026/07/01/miax-exchange-group-options-markets-listing-monday-and-wednesday-weekly>. |
 
+## Margin rules
+
+- CME single stock futures are "security futures". The issuer is a "customer", so the legal minimum margin of 15% of the market value applies, for initial and maintenance margin. The market-maker exclusion needs CME membership and SEC dealer registration, so it does not apply. Source: SEC order 34-105899 of 2026-07-13, <https://www.sec.gov/files/rules/sro/cme/2026/34-105899.pdf>. CONFIRMED.
+- The law permits cash, margin securities, and exempted securities as collateral for security futures (CFTC Regulation 41.46(b), SEC Rule 242.404). Source: <https://www.ecfr.gov/current/title-17/chapter-I/part-41/subpart-E>. CONFIRMED. The broker can ask for cash only. See [interactive-brokers.md](interactive-brokers.md#collateral-and-margin).
+- CME Clearing accepts cash, US Treasuries, and other assets with haircuts, but only from clearing members. CONFIRMED.
+
 ## Design limits
 
 - CME single stock futures expire quarterly. The hedge must be closed before expiry, which leaves basis risk on the close date.

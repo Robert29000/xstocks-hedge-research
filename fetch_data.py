@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch xStocks cash-dividend events with ex-date, payment date and underlying prices.
+"""Fetch xStocks cash-dividend events with ex-date, payment date, underlying prices and option prices.
 
 Default scope: the 10 xStocks with the largest underlying market cap, events of the last 6 months.
 
@@ -9,7 +9,9 @@ Output (in ./data):
   rates.csv                    daily SOFR and EFFR (NY Fed)
   fetch_log.txt                log of the run (requests, unmatched events)
 
-Sources (all free, no key needed except the optional Alpha Vantage fallback):
+Keys: put them in .env (see .env.example). A variable that is set in the shell has priority.
+
+Sources (all free; Massive and Alpha Vantage need a free key):
   xStocks public API   https://api.xstocks.fi/api/v2/public  (events, multipliers, asset list)
   Nasdaq API           https://api.nasdaq.com/api/quote/{T}/dividends  (Nasdaq-listed names)
   Nasdaq screener      https://api.nasdaq.com/api/screener/stocks  (market caps for the ranking)
@@ -17,6 +19,7 @@ Sources (all free, no key needed except the optional Alpha Vantage fallback):
   Alpha Vantage        DIVIDENDS function, only if ALPHAVANTAGE_API_KEY is set
   Yahoo Finance        yfinance, unadjusted daily Close
   NY Fed               https://markets.newyorkfed.org/api/rates/...  (SOFR, EFFR)
+  Massive              https://api.polygon.io  (option contracts and daily option prices), only if MASSIVE_API_KEY is set
 """
 
 import argparse
@@ -32,6 +35,8 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 import requests
+from scipy.optimize import brentq
+from scipy.stats import norm
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -43,6 +48,7 @@ STOCKANALYSIS_DIVIDENDS = "https://stockanalysis.com/api/symbol/{kind}/{symbol}/
 ALPHAVANTAGE_DIVIDENDS = "https://www.alphavantage.co/query?function=DIVIDENDS&symbol={symbol}&apikey={key}"
 NASDAQ_SCREENER = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&download=true"
 NYFED_RATES ="https://markets.newyorkfed.org/api/rates/{group}/{rate}/search.json?startDate={start}&endDate={end}"
+MASSIVE_API = "https://api.polygon.io"  # Massive, formerly Polygon.io. The key goes in a header, not in the URL.
 
 BROWSER_HEADERS = {
     "User-Agent": (
@@ -58,6 +64,7 @@ HOST_DELAYS = {
     "api.nasdaq.com": 3.0,
     "stockanalysis.com": 3.0,
     "www.alphavantage.co": 15.0,  # free tier: 25 requests/day, keep it slow
+    "api.polygon.io": 12.5,       # Massive free tier: 5 requests/minute
 }
 
 NY_TZ = "America/New_York"
@@ -379,6 +386,108 @@ def add_prices(events: pd.DataFrame, delay: float, refresh: bool) -> pd.DataFram
     return pd.DataFrame(out)
 
 
+# ------------------------------------------------------------ option prices
+
+OPTION_COLS = ["opt_expiry", "opt_k_lo", "opt_k_hi", "opt_c_lo_open", "opt_c_hi_open", "opt_c_lo_pay", "opt_c_hi_pay",
+               "opt_volume_open", "iv_open", "iv_pay"]
+
+
+def _bs_call(S: float, K: float, t: float, r: float, sigma: float) -> float:
+    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * t) / (sigma * np.sqrt(t))
+    return S * norm.cdf(d1) - K * np.exp(-r * t) * norm.cdf(d1 - sigma * np.sqrt(t))
+
+
+def implied_vol(price: float, S: float, K: float, t: float, r: float) -> float:
+    """Black-Scholes implied volatility of a call. NaN if no volatility from 0.01% to 500% gives the price."""
+    if not (price > 0 and S > 0 and K > 0 and t > 0):
+        return np.nan
+    try:
+        return brentq(lambda s: _bs_call(S, K, t, r, s) - price, 1e-4, 5.0)
+    except ValueError:
+        return np.nan  # price below the intrinsic value (stale last trade) or above the stock price
+
+
+def _massive_headers() -> dict:
+    return {"Authorization": f"Bearer {os.environ['MASSIVE_API_KEY']}"}
+
+
+def fetch_option_bars(client: HttpClient, ticker: str, start: pd.Timestamp, end: pd.Timestamp) -> dict:
+    """Daily option bars (close = last trade of the day), keyed by NY trading day."""
+    url = f"{MASSIVE_API}/v2/aggs/ticker/{ticker}/range/1/day/{start:%Y-%m-%d}/{end:%Y-%m-%d}?adjusted=true&sort=asc&limit=50"
+    payload = client.get_json(url, headers=_massive_headers()) or {}
+    return {pd.Timestamp(b["t"], unit="ms", tz="UTC").tz_convert(NY_TZ).tz_localize(None).normalize(): b
+            for b in payload.get("results") or []}
+
+
+def option_iv_for_event(client: HttpClient, ev: pd.Series, sofr: pd.Series) -> dict:
+    """ATM call implied volatility at the close before the ex-date and at the close on the payment date.
+
+    The hedge strike is S0 = P_prev - D (the ex-dividend start price). The expiry is the first listed expiry on or
+    after the payment date. The script uses the two listed strikes around S0 and interpolates the volatility to S0.
+    """
+    out = dict.fromkeys(OPTION_COLS, np.nan)
+    if pd.isna(ev["p_prev"]) or pd.isna(ev["p_pay"]) or pd.isna(ev["pay_date"]):
+        return out
+    start, pay = ev["p_prev_date"], ev["pay_date"]
+    s0 = ev["p_prev"] - ev["div_gross_api"]
+    url = (f"{MASSIVE_API}/v3/reference/options/contracts?underlying_ticker={ev['underlying']}&contract_type=call"
+           f"&as_of={start:%Y-%m-%d}&expiration_date.gte={pay:%Y-%m-%d}"
+           f"&expiration_date.lte={pay + pd.Timedelta(days=45):%Y-%m-%d}"
+           f"&strike_price.gte={s0 * 0.9:.2f}&strike_price.lte={s0 * 1.1:.2f}&limit=1000")
+    contracts = pd.DataFrame(((client.get_json(url, headers=_massive_headers()) or {}).get("results")) or [])
+    if contracts.empty:
+        log.warning("no option contracts for %s %s", ev["underlying"], f"{start:%Y-%m-%d}")
+        return out
+    contracts = contracts[contracts["shares_per_contract"] == 100]
+    expiry = contracts["expiration_date"].min()
+    chain = contracts[contracts["expiration_date"] == expiry]
+    below, above = chain[chain["strike_price"] <= s0], chain[chain["strike_price"] >= s0]
+    if below.empty or above.empty:
+        log.warning("no strikes around %.2f for %s expiry %s", s0, ev["underlying"], expiry)
+        return out
+    lo = below.loc[below["strike_price"].idxmax()]
+    hi = above.loc[above["strike_price"].idxmin()]
+    expiry = pd.Timestamp(expiry)
+    bars_lo = fetch_option_bars(client, lo["ticker"], start, pay)
+    bars_hi = bars_lo if hi["ticker"] == lo["ticker"] else fetch_option_bars(client, hi["ticker"], start, pay)
+
+    k_lo, k_hi = lo["strike_price"], hi["strike_price"]
+    weight = (s0 - k_lo) / (k_hi - k_lo) if k_hi > k_lo else 0.0
+
+    def iv_at(day, spot):
+        t = (expiry - day).days / 365
+        r = sofr.asof(day) / 100
+        c_lo = bars_lo.get(day, {}).get("c", np.nan)
+        c_hi = bars_hi.get(day, {}).get("c", np.nan)
+        iv_lo, iv_hi = implied_vol(c_lo, spot, k_lo, t, r), implied_vol(c_hi, spot, k_hi, t, r)
+        if np.isnan(iv_lo) or np.isnan(iv_hi):
+            iv = iv_hi if np.isnan(iv_lo) else iv_lo
+        else:
+            iv = (1 - weight) * iv_lo + weight * iv_hi
+        return c_lo, c_hi, iv
+
+    # Before the ex-date the option price excludes the dividend: use the ex-dividend spot S0.
+    c_lo_open, c_hi_open, iv_open = iv_at(start, s0)
+    c_lo_pay, c_hi_pay, iv_pay = iv_at(ev["p_pay_date"], ev["p_pay"])
+    volume = sum(b.get(start, {}).get("v", 0) for b in ({lo["ticker"]: bars_lo, hi["ticker"]: bars_hi}).values())
+    out.update(opt_expiry=expiry.strftime("%Y-%m-%d"), opt_k_lo=k_lo, opt_k_hi=k_hi,
+               opt_c_lo_open=c_lo_open, opt_c_hi_open=c_hi_open, opt_c_lo_pay=c_lo_pay, opt_c_hi_pay=c_hi_pay,
+               opt_volume_open=volume, iv_open=iv_open, iv_pay=iv_pay)
+    return out
+
+
+def add_option_iv(client: HttpClient, events: pd.DataFrame, rates: pd.DataFrame) -> pd.DataFrame:
+    events = events.reset_index(drop=True)
+    if not os.environ.get("MASSIVE_API_KEY"):
+        log.warning("MASSIVE_API_KEY is not set: no option prices. iv_open and iv_pay stay empty.")
+        return events.assign(**dict.fromkeys(OPTION_COLS, np.nan))
+    sofr = rates["sofr"].dropna()
+    rows = [option_iv_for_event(client, ev, sofr) for _, ev in events.iterrows()]
+    events = pd.concat([events, pd.DataFrame(rows, columns=OPTION_COLS)], axis=1)
+    log.info("option implied volatility: %d of %d events", events["iv_open"].notna().sum(), len(events))
+    return events
+
+
 # -------------------------------------------------------------------- rates
 
 def fetch_rates(client: HttpClient, start: date, end: date) -> pd.DataFrame:
@@ -395,6 +504,20 @@ def fetch_rates(client: HttpClient, start: date, end: date) -> pd.DataFrame:
 
 
 # --------------------------------------------------------------------- main
+
+def load_dotenv(path: Path = ROOT / ".env") -> None:
+    """Read KEY=VALUE lines from .env. A variable that is already set in the shell has priority."""
+    if not path.exists():
+        return
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = (part.strip() for part in line.split("=", 1))
+        value = value.strip("'\"")
+        if value and not os.environ.get(key):
+            os.environ[key] = value
+
 
 def build_events(args) -> None:
     DATA_DIR.mkdir(exist_ok=True)
@@ -464,6 +587,7 @@ def build_events(args) -> None:
     asof = rates.reindex(rates.index.union(events["ex_date"].dropna().unique())).ffill()
     events["sofr_on_ex"] = events["ex_date"].map(asof["sofr"])
     events["effr_on_ex"] = events["ex_date"].map(asof["effr"])
+    events = add_option_iv(client, events, rates)
 
     events = events.sort_values(["ex_date", "xstock"])
     for col in ["ex_date", "record_date", "pay_date", "declaration_date", "p_prev_date", "p_pay_date"]:
@@ -492,6 +616,7 @@ def main() -> None:
     parser.add_argument("--refresh", action="store_true", help="ignore the disk cache in data/raw")
     args = parser.parse_args()
 
+    load_dotenv()
     DATA_DIR.mkdir(exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
