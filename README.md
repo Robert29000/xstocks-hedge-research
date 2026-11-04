@@ -35,10 +35,10 @@ fetch_data.py            Script: fetch events, dividend dates, prices, and rates
 hedge_research.ipynb     Notebook: data analysis, formulas, venue parameters, backtest
 requirements.txt         Python packages
 data/                    Output of fetch_data.py (raw/ is the HTTP cache)
-doc/legal/               Legal context: issuer, ecosystem, and one file for each venue
+docs/legal/              Legal context: issuer, ecosystem, and one file for each venue
 ```
 
-The notebook holds the numbers. The legal and regulatory context is in [`doc/legal/`](doc/legal/README.md).
+The notebook holds the numbers. The legal and regulatory context is in [`docs/legal/`](docs/legal/README.md).
 
 ## Setup
 
@@ -176,4 +176,4 @@ Venue rates and fees were checked on 2026-10-19. The notebook gives each value a
 
 - **No derivatives clause.** The prospectus has no clause that permits the issuer to use futures or options. Strategies B and C can need a prospectus supplement, Jersey FSC consent, or a hedge by a group company.
 - **Pledged collateral.** The underlying shares are pledged to the security agent for the token holders. A loan for strategy A needs other collateral or no collateral.
-- **Not legal advice.** The legal analysis is research, not legal advice. See [`doc/legal/README.md`](doc/legal/README.md#open-legal-questions).
+- **Not legal advice.** The legal analysis is research, not legal advice. See [`docs/legal/README.md`](docs/legal/README.md#open-legal-questions).
