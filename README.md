@@ -10,7 +10,9 @@ This project measures that gap and compares three hedge strategies:
 |---|---|
 | A. Short-term financing | $X \cdot r_A \cdot T/360$ |
 | B. Long futures | $X \cdot (r_B \cdot T/360 + f_B)$ |
-| C. Call options | $X \cdot (0.4 \cdot \sigma \cdot \sqrt{T/365} + f_C)$ |
+| C. Call options | $\approx X \cdot (0.4 \cdot \sigma \cdot \sqrt{T/365} + f_C)$ |
+
+The formula for C is an estimate of the option premium and the fees. The premium and the fees are the maximum cost of C. If the price goes down, the cost is lower.
 
 | Symbol | Meaning | Unit |
 |---|---|---|
